@@ -1,4 +1,4 @@
-package com.template
+package com.gatsinski.rems
 
 import net.corda.core.contracts.*
 import net.corda.core.identity.Party
@@ -9,7 +9,7 @@ import net.corda.core.transactions.LedgerTransaction
 // *****************
 class RealEstateContract : Contract {
     companion object {
-        const val PROGRAM_ID: ContractClassName = "com.template.RealEstateContract"
+        const val PROGRAM_ID: ContractClassName = "com.gatsinski.rems.RealEstateContract"
     }
 
     interface Commands : CommandData {

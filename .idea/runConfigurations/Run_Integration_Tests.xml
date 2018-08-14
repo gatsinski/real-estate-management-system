@@ -2,15 +2,15 @@
   <configuration default="false" name="Run Integration Tests" type="JUnit" factoryName="JUnit">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
       <pattern>
-        <option name="PATTERN" value="com.template.*" />
+        <option name="PATTERN" value="com.gatsinski.rems.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <module name="cordapp_integrationTest" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="PACKAGE_NAME" value="com.template" />
-    <option name="MAIN_CLASS_NAME" value="com.template.DriverBasedTest" />
+    <option name="PACKAGE_NAME" value="com.gatsinski.rems" />
+    <option name="MAIN_CLASS_NAME" value="com.gatsinski.rems.DriverBasedTest" />
     <option name="METHOD_NAME" value="node test" />
     <option name="TEST_OBJECT" value="class" />
     <option name="VM_PARAMETERS" value="-ea -javaagent:lib/quasar.jar" />

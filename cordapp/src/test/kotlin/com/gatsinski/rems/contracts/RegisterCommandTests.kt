@@ -1,7 +1,7 @@
-package com.template.contracts
+package com.gatsinski.rems.contracts
 
-import com.template.RealEstate
-import com.template.RealEstateContract
+import com.gatsinski.rems.RealEstate
+import com.gatsinski.rems.RealEstateContract
 import net.corda.core.identity.CordaX500Name
 import net.corda.testing.contracts.DummyState
 import net.corda.testing.core.TestIdentity
@@ -10,7 +10,7 @@ import net.corda.testing.node.ledger
 import org.junit.Test
 
 class RegisterCommandTests {
-    private val ledgerServices = MockServices(listOf("com.template"))
+    private val ledgerServices = MockServices(listOf("com.gatsinski.rems"))
     private val owner = TestIdentity(CordaX500Name("John Doe", "City", "BG"))
     private val tenant = TestIdentity(CordaX500Name("Richard Roe", "Town", "BG"))
     private val participants = listOf(owner.publicKey)
