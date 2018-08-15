@@ -8,7 +8,7 @@ import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import org.junit.Test
 
-class BuyCommandTests {
+class SellCommandTests {
     private val ledgerServices = MockServices(listOf("com.gatsinski.rems"))
     private val seller = TestIdentity(CordaX500Name("John Doe", "City", "BG"))
     private val buyer = TestIdentity(CordaX500Name("Jane Doe", "City", "BG"))
@@ -27,7 +27,7 @@ class BuyCommandTests {
     fun `Buy command should complete successfully`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
                 verifies()
@@ -39,12 +39,12 @@ class BuyCommandTests {
     fun `A single input should be consumed when buying a real estate`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
                 failsWith("A single input state should be consumed when buying a real estate")
             }
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
@@ -57,12 +57,12 @@ class BuyCommandTests {
     fun `A single output should be produced when buying a real estate`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 failsWith("A single output state should be produced when buying a real estate")
             }
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
@@ -75,7 +75,7 @@ class BuyCommandTests {
     fun `The owner should change when buying a real estate`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstate)
                 failsWith("The owner should change when buying a real estate")
@@ -87,7 +87,7 @@ class BuyCommandTests {
     fun `Only the owner should change when buying a real estate`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(
                     RealEstateContract.PROGRAM_ID,
@@ -96,7 +96,7 @@ class BuyCommandTests {
                 failsWith("Only the owner should change when buying a real estate")
             }
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(
                     RealEstateContract.PROGRAM_ID,
@@ -111,7 +111,7 @@ class BuyCommandTests {
     fun `The tenant and the buyer should be different when buying a real estate`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstateWithTenant)
                 output(RealEstateContract.PROGRAM_ID, realEstateWithTenant.copy(owner = tenant.party))
                 failsWith(
@@ -125,7 +125,7 @@ class BuyCommandTests {
     fun `Both buyer and seller should sign the transaction when a real estate without tenant is being bought`() {
         ledgerServices.ledger {
             transaction {
-                command(listOf(buyer.publicKey), RealEstateContract.Commands.Buy())
+                command(listOf(buyer.publicKey), RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
                 failsWith(
@@ -133,7 +133,7 @@ class BuyCommandTests {
                 )
             }
             transaction {
-                command(listOf(buyer.publicKey), RealEstateContract.Commands.Buy())
+                command(listOf(buyer.publicKey), RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstate)
                 output(RealEstateContract.PROGRAM_ID, realEstateAfterPurchase)
                 failsWith(
@@ -147,7 +147,7 @@ class BuyCommandTests {
     fun `Buyer, seller and tenant should all sign the transaction when a real estate with tenant is being bought`() {
         ledgerServices.ledger {
             transaction {
-                command(buyerAndSeller, RealEstateContract.Commands.Buy())
+                command(buyerAndSeller, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstateWithTenant)
                 output(RealEstateContract.PROGRAM_ID, realEstateWithTenant.copy(owner = buyer.party))
                 failsWith(
@@ -155,7 +155,7 @@ class BuyCommandTests {
                 )
             }
             transaction {
-                command(buyerSellerAndTenant, RealEstateContract.Commands.Buy())
+                command(buyerSellerAndTenant, RealEstateContract.Commands.Sell())
                 input(RealEstateContract.PROGRAM_ID, realEstateWithTenant)
                 output(RealEstateContract.PROGRAM_ID, realEstateWithTenant.copy(owner = buyer.party))
                 verifies()

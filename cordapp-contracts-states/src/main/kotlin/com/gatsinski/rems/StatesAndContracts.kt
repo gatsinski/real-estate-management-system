@@ -14,7 +14,7 @@ class RealEstateContract : Contract {
 
     interface Commands : CommandData {
         class Register : TypeOnlyCommandData(), Commands
-        class Buy : TypeOnlyCommandData(), Commands
+        class Sell : TypeOnlyCommandData(), Commands
         class Rent : TypeOnlyCommandData(), Commands
         class TerminateRent : TypeOnlyCommandData(), Commands
     }
@@ -34,7 +34,7 @@ class RealEstateContract : Contract {
                 "The owner should sign the transaction when registering a real estate" using
                         (command.signers.toSet() == outputState.participants.map { it.owningKey }.toSet())
             }
-            is Commands.Buy -> requireThat {
+            is Commands.Sell -> requireThat {
                 "A single input state should be consumed when buying a real estate" using (tx.inputStates.size == 1)
                 "A single output state should be produced when buying a real estate" using (tx.outputStates.size == 1)
                 val inputState = tx.inputStates.single() as RealEstate
