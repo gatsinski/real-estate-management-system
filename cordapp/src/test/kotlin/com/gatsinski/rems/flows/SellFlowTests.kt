@@ -5,48 +5,22 @@ import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.flows.FlowException
 import net.corda.core.identity.Party
 import net.corda.core.node.services.queryBy
-import net.corda.core.transactions.SignedTransaction
-import net.corda.core.utilities.getOrThrow
 import net.corda.testing.core.singleIdentity
-import net.corda.testing.node.MockNetwork
 import net.corda.testing.node.StartedMockNode
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class SellFlowTests {
-    private val address = "City, Test Residential Quarter, Building 1, Entrance A, №1"
-    private lateinit var network: MockNetwork
-    private lateinit var sellerNode: StartedMockNode
-    private lateinit var buyerNode: StartedMockNode
-    private lateinit var seller: Party
-    private lateinit var buyer: Party
+class SellFlowTests : FlowTestBase() {
+    protected lateinit var buyerNode: StartedMockNode
+    protected lateinit var buyer: Party
 
     @Before
     fun setup() {
-        network = MockNetwork(listOf("com.gatsinski.rems"), threadPerNode = true)
-        sellerNode = network.createNode()
         buyerNode = network.createNode()
-        seller = sellerNode.info.singleIdentity()
         buyer = buyerNode.info.singleIdentity()
-    }
-
-    @After
-    fun tearDown() {
-        network.stopNodes()
-    }
-
-    private fun registerRealEstate(): SignedTransaction {
-        val flow = RegisterFlow.Initiator(address = address)
-        return sellerNode.startFlow(flow).getOrThrow()
-    }
-
-    private fun sellRealEstate(linearId: UniqueIdentifier): SignedTransaction {
-        val flow = SellFlow.Initiator(linearId = linearId, buyer = buyer)
-        return sellerNode.startFlow(flow).getOrThrow()
     }
 
     @Test
@@ -55,7 +29,7 @@ class SellFlowTests {
         network.waitQuiescent()
 
         val inputState = registerTransaction.tx.outputStates.single() as RealEstate
-        val sellTransaction = sellRealEstate(inputState.linearId)
+        val sellTransaction = sellRealEstate(linearId = inputState.linearId, buyer = buyer)
         network.waitQuiescent()
 
         val outputState = sellTransaction.tx.outputStates.single() as RealEstate
@@ -68,7 +42,7 @@ class SellFlowTests {
         network.waitQuiescent()
 
         val inputState = signedTransaction.tx.outputStates.single() as RealEstate
-        sellRealEstate(inputState.linearId)
+        sellRealEstate(linearId = inputState.linearId, buyer = buyer)
         network.waitQuiescent()
 
         buyerNode.transaction {
@@ -79,8 +53,8 @@ class SellFlowTests {
             assertEquals(buyer, realEstate.owner, "The new owner should be recorded")
         }
 
-        sellerNode.transaction {
-            val sellerStates = sellerNode.services.vaultService.queryBy<RealEstate>().states
+        ownerNode.transaction {
+            val sellerStates = ownerNode.services.vaultService.queryBy<RealEstate>().states
             assertTrue(sellerStates.isEmpty(), "The old state should be consumed")
         }
     }
@@ -91,7 +65,7 @@ class SellFlowTests {
         network.waitQuiescent()
 
         val inputState = registerTransaction.tx.outputStates.single() as RealEstate
-        val sellTransaction = sellRealEstate(inputState.linearId)
+        val sellTransaction = sellRealEstate(linearId = inputState.linearId, buyer = buyer)
 
         sellTransaction.verifyRequiredSignatures()
     }
@@ -99,8 +73,8 @@ class SellFlowTests {
     @Test
     fun `Real estate sell should fail if invalid linear ID is provided`() {
         assertFailsWith<FlowException> {
-            sellRealEstate(linearId = UniqueIdentifier())
+            sellRealEstate(linearId = UniqueIdentifier(), buyer = buyer)
         }
     }
-    
+
 }
