@@ -53,6 +53,7 @@ class RentFlow {
             val partiallySignedTransaction = serviceHub.signInitialTransaction(transactionBuilder)
             val sessions = (outputState.participants - ourIdentity).map { initiateFlow(it) }.toSet()
             val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, sessions))
+
             return subFlow(FinalityFlow(fullySignedTransaction))
         }
     }
@@ -71,6 +72,5 @@ class RentFlow {
 
             subFlow(signedTransactionFlow)
         }
-
     }
 }

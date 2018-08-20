@@ -76,5 +76,4 @@ class SellFlowTests : FlowTestBase() {
             sellRealEstate(linearId = UniqueIdentifier(), buyer = buyer)
         }
     }
-
 }

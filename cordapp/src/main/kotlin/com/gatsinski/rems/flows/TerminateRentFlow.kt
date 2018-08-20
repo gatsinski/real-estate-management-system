@@ -61,9 +61,7 @@ class TerminateRentFlow {
             )
 
             return subFlow(FinalityFlow(fullySignedTransaction))
-
         }
-
     }
 
     @InitiatedBy(Initiator::class)
@@ -77,9 +75,7 @@ class TerminateRentFlow {
                     "The output state must be a real estate" using (realEstate is RealEstate)
                 }
             }
-
             subFlow(signedTransactionFlow)
         }
-
     }
 }

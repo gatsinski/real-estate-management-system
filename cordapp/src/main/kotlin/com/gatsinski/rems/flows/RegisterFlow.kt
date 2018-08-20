@@ -27,13 +27,10 @@ class RegisterFlow {
             val transactionBuilder = TransactionBuilder(notary = notary)
                 .addOutputState(outputState, RealEstateContract.PROGRAM_ID)
                 .addCommand(command)
-
             transactionBuilder.verify(serviceHub)
-
             val fullySignedTransaction = serviceHub.signInitialTransaction(transactionBuilder)
 
             return subFlow(FinalityFlow(fullySignedTransaction))
         }
-
     }
 }

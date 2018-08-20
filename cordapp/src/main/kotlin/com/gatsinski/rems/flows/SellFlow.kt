@@ -42,22 +42,16 @@ class SellFlow {
             val inputStateAndRef = vaultPage.states.singleOrNull()
                 ?: throw FlowException("Real estate with id $linearId is not found.")
             val inputState = inputStateAndRef.state.data
-
             val outputState = inputState.copy(owner = buyer)
-
             val signers = (inputState.participants union outputState.participants).map { it.owningKey }
             val command = Command(RealEstateContract.Commands.Sell(), signers)
-
             val transactionBuilder = TransactionBuilder(notary = notary)
                 .addInputState(inputStateAndRef)
                 .addOutputState(outputState, RealEstateContract.PROGRAM_ID)
                 .addCommand(command)
-
             transactionBuilder.verify(serviceHub)
             val partiallySignedTransaction = serviceHub.signInitialTransaction(transactionBuilder)
-
             val sessions = (outputState.participants - ourIdentity).map { initiateFlow(it) }.toSet()
-
             val fullySignedTransaction = subFlow(CollectSignaturesFlow(partiallySignedTransaction, sessions))
 
             return subFlow(FinalityFlow(fullySignedTransaction))
@@ -75,10 +69,7 @@ class SellFlow {
                     "The output state must be a real estate" using (realEstate is RealEstate)
                 }
             }
-
             subFlow(signedTransactionFlow)
         }
-
     }
-
 }

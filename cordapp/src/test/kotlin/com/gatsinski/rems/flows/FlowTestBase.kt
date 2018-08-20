@@ -47,7 +47,6 @@ open class FlowTestBase {
         val flow = SellFlow.Initiator(linearId = linearId, buyer = buyer)
         return ownerNode.startFlow(flow).getOrThrow()
     }
-
 }
 
 
